@@ -19,7 +19,6 @@
 package org.apache.flink.runtime.state.heap;
 
 import org.apache.flink.runtime.state.KeyGroupRange;
-import org.apache.flink.runtime.state.KeyGroupRangeOffsets;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -73,10 +72,10 @@ public class InternalKeyContextImpl<K> implements InternalKeyContext<K> {
 
     @Override
     public void setCurrentKeyGroupIndex(int currentKeyGroupIndex) {
-        if (!keyGroupRange.contains(currentKeyGroupIndex)) {
-            throw KeyGroupRangeOffsets.newIllegalKeyGroupException(
-                    currentKeyGroupIndex, keyGroupRange);
-        }
+        //        if (!keyGroupRange.contains(currentKeyGroupIndex)) {
+        //            throw KeyGroupRangeOffsets.newIllegalKeyGroupException(
+        //                    currentKeyGroupIndex, keyGroupRange);
+        //        }
         this.currentKeyGroupIndex = currentKeyGroupIndex;
     }
 }

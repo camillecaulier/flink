@@ -73,7 +73,7 @@ public abstract class StateTable<K, N, S>
      * Map for holding the actual state objects. The outer array represents the key-groups. All
      * array positions will be initialized with an empty state map.
      */
-    protected final StateMap<K, N, S>[] keyGroupedStateMaps;
+    protected StateMap<K, N, S>[] keyGroupedStateMaps;
 
     /**
      * @param keyContext the key context provides the key scope for all put/get/delete operations.
@@ -298,12 +298,27 @@ public abstract class StateTable<K, N, S>
 
     @VisibleForTesting
     public StateMap<K, N, S> getMapForKeyGroup(int keyGroupIndex) {
-        final int pos = indexToOffset(keyGroupIndex);
+        final int pos = keyGroupIndex;
         if (pos >= 0 && pos < keyGroupedStateMaps.length) {
             return keyGroupedStateMaps[pos];
-        } else {
+        }
+        //        else {
+        //            throw KeyGroupRangeOffsets.newIllegalKeyGroupException(keyGroupIndex,
+        // keyGroupRange);
+        //        }
+        if (pos < 0) {
             throw KeyGroupRangeOffsets.newIllegalKeyGroupException(keyGroupIndex, keyGroupRange);
         }
+        while (pos < 0 && pos > keyGroupedStateMaps.length) {
+            doubleCapacity();
+        }
+        System.out.println("pos: " + pos + " keyGroupedStateMaps.length: " + keyGroupedStateMaps.length);
+        return keyGroupedStateMaps[pos];
+    }
+
+    private void doubleCapacity() {
+        int newCapacity = keyGroupedStateMaps.length * 2;
+        keyGroupedStateMaps = Arrays.copyOf(keyGroupedStateMaps, newCapacity);
     }
 
     /** Translates a key-group id to the internal array offset. */
